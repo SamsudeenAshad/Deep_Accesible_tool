@@ -1,0 +1,298 @@
+// Content script - Main accessibility functionality
+class AccessibilityTool {
+    constructor() {
+        this.textSizeLevel = 0;
+        this.maxTextSize = 5;
+        this.minTextSize = -3;
+        this.features = {
+            grayscale: false,
+            highContrast: false,
+            negativeContrast: false,
+            lightBackground: false,
+            linksUnderline: false,
+            readableFont: false
+        };
+        this.isInitialized = false;
+        this.init();
+    }
+
+    init() {
+        try {
+            this.createStyleElement();
+            this.loadSavedSettings();
+            this.addKeyboardSupport();
+            this.isInitialized = true;
+            console.log('Deep Accessibility Tool v1.0.0 initialized successfully');
+        } catch (error) {
+            console.error('Failed to initialize accessibility tool:', error);
+        }
+    }
+
+    createStyleElement() {
+        // Remove existing style element if present
+        const existing = document.getElementById('accessibility-styles');
+        if (existing) {
+            existing.remove();
+        }
+        
+        this.styleElement = document.createElement('style');
+        this.styleElement.id = 'accessibility-styles';
+        this.styleElement.setAttribute('data-extension', 'deep-accessibility-tool');
+        document.head.appendChild(this.styleElement);
+    }
+
+    addKeyboardSupport() {
+        // Add keyboard shortcuts for power users
+        document.addEventListener('keydown', (e) => {
+            // Ctrl+Alt+R to reset all
+            if (e.ctrlKey && e.altKey && e.key === 'r') {
+                e.preventDefault();
+                this.resetAll();
+                this.showNotification('All accessibility settings reset');
+            }
+            // Ctrl+Alt+H for high contrast
+            if (e.ctrlKey && e.altKey && e.key === 'h') {
+                e.preventDefault();
+                this.toggleFeature('highContrast');
+            }
+        });
+    }
+
+    showNotification(message) {
+        // Create a brief notification for user feedback
+        const notification = document.createElement('div');
+        notification.textContent = message;
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #4f46e5;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            z-index: 999999;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transition: opacity 0.3s ease;
+        `;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.style.opacity = '0';
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 300);
+        }, 2000);
+    }
+
+    executeAction(action) {
+        switch (action) {
+            case 'increaseText':
+                this.increaseTextSize();
+                break;
+            case 'decreaseText':
+                this.decreaseTextSize();
+                break;
+            default:
+                console.log('Unknown action:', action);
+        }
+    }
+
+    increaseTextSize() {
+        if (this.textSizeLevel < this.maxTextSize) {
+            this.textSizeLevel++;
+            this.updateTextSize();
+            this.saveSettings();
+        }
+    }
+
+    decreaseTextSize() {
+        if (this.textSizeLevel > this.minTextSize) {
+            this.textSizeLevel--;
+            this.updateTextSize();
+            this.saveSettings();
+        }
+    }
+
+    updateTextSize() {
+        const scale = 1 + (this.textSizeLevel * 0.1);
+        const css = `
+            * {
+                font-size: ${scale}em !important;
+                line-height: ${scale * 1.2} !important;
+            }
+            input, textarea, select {
+                font-size: ${scale * 0.9}em !important;
+            }
+        `;
+        this.updateStyles('textSize', css);
+    }
+
+    toggleFeature(feature) {
+        this.features[feature] = !this.features[feature];
+        this.updateFeatureStyles();
+        this.saveSettings();
+        return this.features[feature];
+    }
+
+    updateFeatureStyles() {
+        let css = '';
+
+        // Grayscale
+        if (this.features.grayscale) {
+            css += `
+                html {
+                    filter: grayscale(100%) !important;
+                }
+            `;
+        }
+
+        // High Contrast
+        if (this.features.highContrast) {
+            css += `
+                * {
+                    background-color: black !important;
+                    color: white !important;
+                    border-color: white !important;
+                }
+                a, a:visited {
+                    color: yellow !important;
+                }
+                img {
+                    filter: contrast(200%) !important;
+                }
+            `;
+        }
+
+        // Negative Contrast
+        if (this.features.negativeContrast) {
+            css += `
+                html {
+                    filter: invert(1) hue-rotate(180deg) !important;
+                }
+                img, video, iframe, svg {
+                    filter: invert(1) hue-rotate(180deg) !important;
+                }
+            `;
+        }
+
+        // Light Background
+        if (this.features.lightBackground) {
+            css += `
+                * {
+                    background-color: #ffffff !important;
+                    color: #000000 !important;
+                }
+                a, a:visited {
+                    color: #0066cc !important;
+                }
+            `;
+        }
+
+        // Links Underline
+        if (this.features.linksUnderline) {
+            css += `
+                a {
+                    text-decoration: underline !important;
+                    text-decoration-thickness: 2px !important;
+                }
+            `;
+        }
+
+        // Readable Font
+        if (this.features.readableFont) {
+            css += `
+                * {
+                    font-family: "Arial", "Helvetica", "Open Sans", sans-serif !important;
+                    font-weight: 400 !important;
+                    letter-spacing: 0.5px !important;
+                }
+                h1, h2, h3, h4, h5, h6 {
+                    font-weight: 600 !important;
+                }
+            `;
+        }
+
+        this.updateStyles('features', css);
+    }
+
+    updateStyles(type, css) {
+        // Remove existing styles of this type
+        const existingStyle = document.getElementById(`accessibility-${type}`);
+        if (existingStyle) {
+            existingStyle.remove();
+        }
+
+        // Add new styles
+        if (css) {
+            const styleElement = document.createElement('style');
+            styleElement.id = `accessibility-${type}`;
+            styleElement.textContent = css;
+            document.head.appendChild(styleElement);
+        }
+    }
+
+    resetAll() {
+        this.textSizeLevel = 0;
+        this.features = {
+            grayscale: false,
+            highContrast: false,
+            negativeContrast: false,
+            lightBackground: false,
+            linksUnderline: false,
+            readableFont: false
+        };
+
+        // Remove all accessibility styles
+        const styles = document.querySelectorAll('[id^="accessibility-"]');
+        styles.forEach(style => style.remove());
+
+        // Clear saved settings
+        this.clearSavedSettings();
+    }
+
+    saveSettings() {
+        const settings = {
+            textSizeLevel: this.textSizeLevel,
+            features: this.features
+        };
+        chrome.storage.local.set({ accessibilitySettings: settings });
+    }
+
+    loadSavedSettings() {
+        chrome.storage.local.get(['accessibilitySettings'], (result) => {
+            if (result.accessibilitySettings) {
+                const settings = result.accessibilitySettings;
+                this.textSizeLevel = settings.textSizeLevel || 0;
+                this.features = { ...this.features, ...settings.features };
+                
+                // Apply loaded settings
+                if (this.textSizeLevel !== 0) {
+                    this.updateTextSize();
+                }
+                this.updateFeatureStyles();
+            }
+        });
+    }
+
+    clearSavedSettings() {
+        chrome.storage.local.remove(['accessibilitySettings']);
+    }
+}
+
+// Initialize the accessibility tool
+window.accessibilityTool = new AccessibilityTool();
+
+// Listen for messages from popup
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.action === 'getStatus') {
+        sendResponse({
+            textSizeLevel: window.accessibilityTool.textSizeLevel,
+            features: window.accessibilityTool.features
+        });
+    }
+});

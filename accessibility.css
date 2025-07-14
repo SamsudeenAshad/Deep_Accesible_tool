@@ -1,0 +1,85 @@
+/* Accessibility CSS - Additional styles for better accessibility */
+
+/* High contrast mode fallback */
+.accessibility-high-contrast {
+    background-color: black !important;
+    color: white !important;
+}
+
+.accessibility-high-contrast a {
+    color: yellow !important;
+}
+
+/* Light background mode */
+.accessibility-light-background {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+}
+
+/* Readable font styles */
+.accessibility-readable-font {
+    font-family: "Arial", "Helvetica", "Open Sans", sans-serif !important;
+    letter-spacing: 0.5px !important;
+}
+
+/* Link underline styles */
+.accessibility-links-underline a {
+    text-decoration: underline !important;
+    text-decoration-thickness: 2px !important;
+}
+
+/* Focus indicators for better keyboard navigation */
+*:focus {
+    outline: 3px solid #4f46e5 !important;
+    outline-offset: 2px !important;
+}
+
+/* Skip link for screen readers */
+.accessibility-skip-link {
+    position: absolute;
+    top: -40px;
+    left: 6px;
+    background: #000;
+    color: #fff;
+    padding: 8px;
+    text-decoration: none;
+    z-index: 100000;
+}
+
+.accessibility-skip-link:focus {
+    top: 6px;
+}
+
+/* Improved button accessibility */
+button:focus,
+input[type="button"]:focus,
+input[type="submit"]:focus {
+    outline: 3px solid #4f46e5 !important;
+    outline-offset: 2px !important;
+}
+
+/* Better form field visibility */
+input, textarea, select {
+    border: 2px solid #ccc !important;
+}
+
+input:focus, textarea:focus, select:focus {
+    border-color: #4f46e5 !important;
+}
+
+/* Ensure images have proper contrast */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Text selection styling */
+::selection {
+    background-color: #4f46e5;
+    color: white;
+}
+
+::-moz-selection {
+    background-color: #4f46e5;
+    color: white;
+}
