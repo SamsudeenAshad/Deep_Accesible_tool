@@ -16,6 +16,38 @@
     color: #000000 !important;
 }
 
+/* Dark mode styles */
+.accessibility-dark-mode {
+    background-color: #1a1a1a !important;
+    color: #e0e0e0 !important;
+}
+
+.accessibility-dark-mode a {
+    color: #64b5f6 !important;
+}
+
+.accessibility-dark-mode a:hover {
+    color: #90caf9 !important;
+}
+
+.accessibility-dark-mode input,
+.accessibility-dark-mode textarea,
+.accessibility-dark-mode select,
+.accessibility-dark-mode button {
+    background-color: #404040 !important;
+    color: #e0e0e0 !important;
+    border-color: #606060 !important;
+}
+
+.accessibility-dark-mode h1,
+.accessibility-dark-mode h2,
+.accessibility-dark-mode h3,
+.accessibility-dark-mode h4,
+.accessibility-dark-mode h5,
+.accessibility-dark-mode h6 {
+    color: #ffffff !important;
+}
+
 /* Readable font styles */
 .accessibility-readable-font {
     font-family: "Arial", "Helvetica", "Open Sans", sans-serif !important;
@@ -82,4 +114,9 @@ img {
 ::-moz-selection {
     background-color: #4f46e5;
     color: white;
+}
+
+/* Improved theme switching */
+.accessibility-theme-transition * {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease !important;
 }

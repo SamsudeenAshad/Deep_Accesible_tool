@@ -53,8 +53,15 @@
 1. **Click Extension Icon** - Blue accessibility icon in toolbar
 2. **Try Text Size** - Click "Increase Text" on any webpage
 3. **Test Contrast** - Try "High Contrast" mode
-4. **Explore Features** - Each button toggles on/off
-5. **Reset When Done** - Use "Reset All" to return to normal
+4. **Try Dark Mode** - Click "Dark Mode" for comfortable night viewing
+5. **Explore Features** - Each button toggles on/off
+6. **Reset When Done** - Use "Reset All" to return to normal
+
+### 🎨 **New Dark Mode Feature!**
+- Perfect for night browsing and reduced eye strain
+- Automatically converts any website to dark theme
+- Smart conflict resolution (disables light mode when enabled)
+- Keyboard shortcut: `Ctrl+Alt+D`
 
 ## 🔧 Troubleshooting
 

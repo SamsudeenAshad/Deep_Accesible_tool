@@ -21,6 +21,7 @@ Make the web accessible for everyone with Deep Accessibility Tool - a comprehens
 • High contrast mode for better visibility
 • Negative contrast for reduced eye strain
 • Light background mode for comfortable reading
+• Dark mode for night browsing and reduced eye strain
 
 **🔗 Navigation Aids**
 • Force underline on all links for better identification

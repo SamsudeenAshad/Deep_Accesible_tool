@@ -9,6 +9,7 @@ class AccessibilityTool {
             highContrast: false,
             negativeContrast: false,
             lightBackground: false,
+            darkMode: false,
             linksUnderline: false,
             readableFont: false
         };
@@ -54,6 +55,12 @@ class AccessibilityTool {
             if (e.ctrlKey && e.altKey && e.key === 'h') {
                 e.preventDefault();
                 this.toggleFeature('highContrast');
+            }
+            // Ctrl+Alt+D for dark mode
+            if (e.ctrlKey && e.altKey && e.key === 'd') {
+                e.preventDefault();
+                this.toggleFeature('darkMode');
+                this.showNotification(`Dark mode ${this.features.darkMode ? 'enabled' : 'disabled'}`);
             }
         });
     }
@@ -133,6 +140,14 @@ class AccessibilityTool {
     }
 
     toggleFeature(feature) {
+        // Handle theme conflicts - only one theme can be active at a time
+        if (feature === 'darkMode' && this.features.lightBackground) {
+            this.features.lightBackground = false;
+        }
+        if (feature === 'lightBackground' && this.features.darkMode) {
+            this.features.darkMode = false;
+        }
+        
         this.features[feature] = !this.features[feature];
         this.updateFeatureStyles();
         this.saveSettings();
@@ -193,6 +208,52 @@ class AccessibilityTool {
             `;
         }
 
+        // Dark Mode
+        if (this.features.darkMode) {
+            css += `
+                * {
+                    background-color: #1a1a1a !important;
+                    color: #e0e0e0 !important;
+                    border-color: #404040 !important;
+                }
+                body {
+                    background-color: #1a1a1a !important;
+                }
+                div, section, article, main, header, footer, nav {
+                    background-color: #2d2d2d !important;
+                }
+                input, textarea, select, button {
+                    background-color: #404040 !important;
+                    color: #e0e0e0 !important;
+                    border-color: #606060 !important;
+                }
+                a, a:visited {
+                    color: #64b5f6 !important;
+                }
+                a:hover {
+                    color: #90caf9 !important;
+                }
+                h1, h2, h3, h4, h5, h6 {
+                    color: #ffffff !important;
+                }
+                code, pre {
+                    background-color: #333333 !important;
+                    color: #f0f0f0 !important;
+                }
+                table {
+                    background-color: #2d2d2d !important;
+                }
+                th, td {
+                    border-color: #505050 !important;
+                    background-color: #353535 !important;
+                }
+                img {
+                    opacity: 0.9;
+                    filter: brightness(0.9);
+                }
+            `;
+        }
+
         // Links Underline
         if (this.features.linksUnderline) {
             css += `
@@ -243,6 +304,7 @@ class AccessibilityTool {
             highContrast: false,
             negativeContrast: false,
             lightBackground: false,
+            darkMode: false,
             linksUnderline: false,
             readableFont: false
         };

@@ -33,6 +33,10 @@ class AccessibilityPopup {
             this.toggleFeature('lightBackground');
         });
 
+        document.getElementById('darkMode').addEventListener('click', () => {
+            this.toggleFeature('darkMode');
+        });
+
         // Links
         document.getElementById('linksUnderline').addEventListener('click', () => {
             this.toggleFeature('linksUnderline');

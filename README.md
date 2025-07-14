@@ -13,6 +13,7 @@ A comprehensive browser extension designed to enhance web accessibility for user
 - **High Contrast**: Enhance contrast for better visibility
 - **Negative Contrast**: Invert colors for reduced eye strain
 - **Light Background**: Force light backgrounds for better readability
+- **Dark Mode**: Apply dark theme for reduced eye strain and better night viewing
 
 ### 🔗 Link Enhancements
 - **Links Underline**: Make all links clearly underlined
