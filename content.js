@@ -2,8 +2,8 @@
 class AccessibilityTool {
     constructor() {
         this.textSizeLevel = 0;
-        this.maxTextSize = 5;
-        this.minTextSize = -3;
+        this.maxTextSize = 10;
+        this.minTextSize = -5;
         this.features = {
             grayscale: false,
             highContrast: false,
@@ -23,7 +23,7 @@ class AccessibilityTool {
             this.loadSavedSettings();
             this.addKeyboardSupport();
             this.isInitialized = true;
-            console.log('Deep Accessibility Tool v1.0.0 initialized successfully');
+            console.log('Deep Accessibility Tool v1.1.0 initialized successfully');
         } catch (error) {
             console.error('Failed to initialize accessibility tool:', error);
         }
@@ -61,6 +61,16 @@ class AccessibilityTool {
                 e.preventDefault();
                 this.toggleFeature('darkMode');
                 this.showNotification(`Dark mode ${this.features.darkMode ? 'enabled' : 'disabled'}`);
+            }
+            // Ctrl+Alt+Plus for increase text size
+            if (e.ctrlKey && e.altKey && (e.key === '+' || e.key === '=')) {
+                e.preventDefault();
+                this.increaseTextSize();
+            }
+            // Ctrl+Alt+Minus for decrease text size
+            if (e.ctrlKey && e.altKey && e.key === '-') {
+                e.preventDefault();
+                this.decreaseTextSize();
             }
         });
     }
@@ -113,7 +123,9 @@ class AccessibilityTool {
         if (this.textSizeLevel < this.maxTextSize) {
             this.textSizeLevel++;
             this.updateTextSize();
+            this.handleOverlappingIssues();
             this.saveSettings();
+            this.showNotification(`Text size: ${this.getTextSizeDescription()}`);
         }
     }
 
@@ -121,19 +133,103 @@ class AccessibilityTool {
         if (this.textSizeLevel > this.minTextSize) {
             this.textSizeLevel--;
             this.updateTextSize();
+            this.handleOverlappingIssues();
             this.saveSettings();
+            this.showNotification(`Text size: ${this.getTextSizeDescription()}`);
         }
     }
 
+    getTextSizeDescription() {
+        if (this.textSizeLevel === 0) return 'Normal';
+        if (this.textSizeLevel > 0) return `+${this.textSizeLevel * 5}%`;
+        return `${this.textSizeLevel * 5}%`;
+    }
+
     updateTextSize() {
-        const scale = 1 + (this.textSizeLevel * 0.1);
+        const scale = 1 + (this.textSizeLevel * 0.05); // 5% increments
+        
+        // Add class to body for CSS targeting
+        if (this.textSizeLevel !== 0) {
+            document.body.classList.add('accessibility-text-size-applied');
+        } else {
+            document.body.classList.remove('accessibility-text-size-applied');
+        }
+        
         const css = `
             * {
                 font-size: ${scale}em !important;
-                line-height: ${scale * 1.2} !important;
+                line-height: ${Math.max(1.4, scale * 1.3)} !important;
             }
+            
+            /* Improved spacing for text elements */
+            p, div, span, li, td, th {
+                line-height: ${Math.max(1.5, scale * 1.4)} !important;
+                margin-bottom: ${scale * 0.5}em !important;
+            }
+            
+            /* Headings with proper spacing */
+            h1, h2, h3, h4, h5, h6 {
+                line-height: ${Math.max(1.3, scale * 1.2)} !important;
+                margin-top: ${scale * 0.8}em !important;
+                margin-bottom: ${scale * 0.5}em !important;
+            }
+            
+            /* Lists with better spacing */
+            ul, ol {
+                margin-bottom: ${scale * 0.8}em !important;
+                padding-left: ${scale * 1.5}em !important;
+            }
+            
+            li {
+                margin-bottom: ${scale * 0.3}em !important;
+                line-height: ${Math.max(1.4, scale * 1.3)} !important;
+            }
+            
+            /* Table elements */
+            table {
+                border-spacing: ${scale * 0.1}em !important;
+            }
+            
+            td, th {
+                padding: ${scale * 0.5}em !important;
+                line-height: ${Math.max(1.3, scale * 1.2)} !important;
+            }
+            
+            /* Form elements */
             input, textarea, select {
                 font-size: ${scale * 0.9}em !important;
+                line-height: ${Math.max(1.3, scale * 1.2)} !important;
+                padding: ${scale * 0.4}em !important;
+            }
+            
+            /* Button elements */
+            button {
+                font-size: ${scale}em !important;
+                line-height: ${Math.max(1.2, scale * 1.1)} !important;
+                padding: ${scale * 0.5}em ${scale * 0.8}em !important;
+            }
+            
+            /* Prevent text from overlapping in containers */
+            article, section, div {
+                margin-bottom: ${scale * 0.3}em !important;
+            }
+            
+            /* Improve readability for inline elements */
+            a, strong, em, code {
+                line-height: inherit !important;
+            }
+            
+            /* Code blocks */
+            pre, code {
+                line-height: ${Math.max(1.4, scale * 1.3)} !important;
+                padding: ${scale * 0.2}em !important;
+            }
+            
+            /* Blockquotes */
+            blockquote {
+                margin: ${scale * 0.8}em 0 !important;
+                padding: ${scale * 0.5}em !important;
+                line-height: ${Math.max(1.5, scale * 1.4)} !important;
             }
         `;
         this.updateStyles('textSize', css);
@@ -335,6 +431,7 @@ class AccessibilityTool {
                 // Apply loaded settings
                 if (this.textSizeLevel !== 0) {
                     this.updateTextSize();
+                    this.handleOverlappingIssues();
                 }
                 this.updateFeatureStyles();
             }
@@ -343,6 +440,23 @@ class AccessibilityTool {
 
     clearSavedSettings() {
         chrome.storage.local.remove(['accessibilitySettings']);
+    }
+
+    // Add method to handle specific overlapping issues
+    handleOverlappingIssues() {
+        // Fix common overlapping scenarios
+        const problematicElements = document.querySelectorAll('nav, header, footer, .menu, .sidebar');
+        problematicElements.forEach(element => {
+            if (element.style.position === 'fixed' || element.style.position === 'absolute') {
+                element.style.zIndex = Math.max(parseInt(element.style.zIndex) || 0, 1000);
+            }
+        });
+        
+        // Ensure proper spacing for floating elements
+        const floatingElements = document.querySelectorAll('[style*="float"]');
+        floatingElements.forEach(element => {
+            element.style.marginBottom = '0.5em';
+        });
     }
 }
 

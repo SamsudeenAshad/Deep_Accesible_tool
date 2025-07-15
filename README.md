@@ -5,8 +5,10 @@ A comprehensive browser extension designed to enhance web accessibility for user
 ## 🌟 Features
 
 ### 📝 Text Adjustments
-- **Increase Text Size**: Make text larger for better readability
-- **Decrease Text Size**: Reduce text size when needed
+- **Increase Text Size**: Make text larger for better readability (5% increments)
+- **Decrease Text Size**: Reduce text size when needed (5% decrements)
+- **Fine-grained Control**: 20 levels of adjustment (10 up, 5 down from normal)
+- **Visual Feedback**: Shows current text size percentage
 
 ### 🎨 Visual Enhancements
 - **Grayscale Mode**: Convert pages to grayscale for better focus

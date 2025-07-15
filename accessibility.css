@@ -120,3 +120,37 @@ img {
 .accessibility-theme-transition * {
     transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease !important;
 }
+
+/* Prevent text overlapping when text size is increased */
+.accessibility-text-size-applied {
+    overflow-wrap: break-word !important;
+    word-wrap: break-word !important;
+    word-break: break-word !important;
+    hyphens: auto !important;
+}
+
+/* Ensure proper spacing for common layout elements */
+.accessibility-text-size-applied p + p,
+.accessibility-text-size-applied div + div,
+.accessibility-text-size-applied li + li {
+    margin-top: 0.3em !important;
+}
+
+/* Fix for sticky/fixed elements that might overlap */
+.accessibility-text-size-applied nav,
+.accessibility-text-size-applied header,
+.accessibility-text-size-applied footer {
+    position: relative !important;
+    z-index: 1000 !important;
+}
+
+/* Prevent overflow in containers */
+.accessibility-text-size-applied * {
+    box-sizing: border-box !important;
+}
+
+/* Improve flex and grid layouts */
+.accessibility-text-size-applied [style*="display: flex"],
+.accessibility-text-size-applied [style*="display: grid"] {
+    gap: 0.5em !important;
+}

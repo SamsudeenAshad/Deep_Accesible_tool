@@ -63,6 +63,19 @@
 - Smart conflict resolution (disables light mode when enabled)
 - Keyboard shortcut: `Ctrl+Alt+D`
 
+### ⌨️ **Keyboard Shortcuts**
+- `Ctrl+Alt+R` - Reset all settings
+- `Ctrl+Alt+H` - Toggle high contrast
+- `Ctrl+Alt+D` - Toggle dark mode
+- `Ctrl+Alt++` - Increase text size
+- `Ctrl+Alt+-` - Decrease text size
+
+### 🔧 **Improved Text Size Control**
+- **Smaller increments**: 5% per click (instead of 10%)
+- **More levels**: 20 total levels of adjustment
+- **Visual feedback**: Shows current percentage
+- **Keyboard control**: Use `Ctrl+Alt++` and `Ctrl+Alt+-`
+
 ## 🔧 Troubleshooting
 
 ### Extension Not Loading?
